@@ -104,5 +104,3 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 
 prueba = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 print(main(["TESTING", "HOLA"]))
-
-
