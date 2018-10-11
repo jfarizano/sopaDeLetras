@@ -2,10 +2,13 @@ from random import *
 from math import *
 
 def main(list):
+
 	letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 	direcciones = ["hori1", "hori2", "vert1", "vert2", "diag"]
 	tablero = crearTablero(list)
-	for palabra in list:
+	listaPalabras = sorted(list, key=len, reverse=True)
+
+	for palabra in listaPalabras:
 		disponibles = []
 		while disponibles == []:
 			direccion = choice(direcciones)
@@ -19,14 +22,20 @@ def main(list):
 				colocarPalabra(tablero, palabra, direccion, pos)
 		else:
 			colocarPalabra(tablero, palabra, direccion, pos)
+
+	for i in range(0, len(tablero)):
+		if tablero[i] == "":
+			tablero[i] = 9
 	imprimirTablero(tablero)
 
 def crearTablero(list):
+
 	rt = palabraMasLarga(list)
 	tablero = [""]*rt**2
 	return tablero
 
 def imprimirTablero(tablero):
+
 	rt = int(sqrt(len(tablero)))
 	filas = []
 	for i in range(0, rt):
@@ -35,6 +44,7 @@ def imprimirTablero(tablero):
 		print(fila)
 
 def palabraMasLarga(list):
+
 	max = 0
 	for palabra in list:
 		if len(palabra) > max:
@@ -42,6 +52,7 @@ def palabraMasLarga(list):
 	return max
 
 def lugaresDisponibles(tablero, palabra, direccion):
+
 	rt = int(sqrt(len(tablero)))
 	length = len(palabra)
 	pos = []
@@ -50,7 +61,7 @@ def lugaresDisponibles(tablero, palabra, direccion):
 			final = i + (length-1)*(rt+1)
 			if tablero[i:final+1:rt+1] == [""]*length and diagValida(tablero, palabra, i):
 				pos += [i]
-	elif direccion[:3] == "vert":
+	elif direccion[:4] == "vert":
 		for i in range(0, (rt-length+1)*rt):
 			if i == 0:
 				ultima = rt * length-1
@@ -62,7 +73,7 @@ def lugaresDisponibles(tablero, palabra, direccion):
 				columna = tablero[i:ultima:rt]
 				if columna == [""]*length:
 					pos += [i]
-	elif direccion[:4] == "horiz":
+	elif direccion[:4] == "hori":
 		filas = []
 		for i in range(0, rt):
 			filas += [tablero[i * rt: (i * rt) + rt]]
@@ -73,10 +84,10 @@ def lugaresDisponibles(tablero, palabra, direccion):
 	return pos
 
 def diagValida(tablero, palabra, casilla):
+
 	rt = int(sqrt(len(tablero)))
 	length = len(palabra)
 	filas = []
-	print(casilla)
 	listaNum = [n for n in range(0, rt**2)]
 	for i in range(0, rt):
 		filas += [listaNum[i * rt: (i * rt) + rt]]
@@ -86,6 +97,7 @@ def diagValida(tablero, palabra, casilla):
 				return True
 
 def colocarPalabra(tablero, palabra, direccion, pos):
+
 	rt = int(sqrt(len(tablero)))
 	length = len(palabra)
 	contador = 0
@@ -102,5 +114,16 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 			tablero[pos+i] = palabra[contador]
 			contador += 1
 
-prueba = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
-print(main(["TESTING", "HOLA"]))
+#prueba = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+main(["TESTING", "HOLA", "PRUEBA"])
+
+
+def test():
+
+	rt = 7
+	tablero = [""] * (rt**2)
+
+	lugares = lugaresDisponibles(tablero, "TESTING", "diag")
+	print(lugares)
+
+#test()
