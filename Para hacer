@@ -2,7 +2,7 @@ Bugs:
 -Si una palabra no entra de ninguna forma, la función se cuelga en el while (disponibles == [] para toda dirección)
 Para agregar/boludeces:
 - Agregar testing usando PyTest
-- Printear tablero como strings
+- Printear tablero como strings # Hecho
 - Entrada y salida con archivos
 - Cambiar nombre variable rt a uno más significativo
 - Comentar
