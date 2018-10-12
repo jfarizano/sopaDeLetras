@@ -25,7 +25,7 @@ def main(list):
 
 	for i in range(0, len(tablero)):
 		if tablero[i] == "":
-			tablero[i] = 9
+			tablero[i] = choice(letras)
 	imprimirTablero(tablero)
 
 def crearTablero(list):
@@ -105,25 +105,13 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 		for i in range(0, length):
 			tablero[pos + (rt+1)*i] = palabra[contador]
 			contador += 1
-	elif direccion[:3] == "vert":
+	elif direccion[:4] == "vert":
 		for i in range(0, length):
 			tablero[pos + rt*i] = palabra[contador]
 			contador += 1
-	elif direccion[:3] == "hori":
+	elif direccion[:4] == "hori":
 		for i in range(0, length):
 			tablero[pos+i] = palabra[contador]
 			contador += 1
 
-#prueba = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 main(["TESTING", "HOLA", "PRUEBA"])
-
-
-def test():
-
-	rt = 7
-	tablero = [""] * (rt**2)
-
-	lugares = lugaresDisponibles(tablero, "TESTING", "diag")
-	print(lugares)
-
-#test()
