@@ -1,9 +1,35 @@
 from random import *
 from math import *
 
-def main(list):
+def main(list, tablero = []):
 
-	letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
+	mensajeBienvenida = """Bienvenido, ingrese un número para elegir la opción deseada:
+	1 - Crear sopa de letras a partir de una lista de palabras
+	2 - Buscar la posición de las palabras de una lista en una sopa de letras dada 
+	3 - Salir del programa
+	"""
+
+	print(mensajeBienvenida)
+	modo = 0
+
+	while modo != "1" and modo != "2" and modo != "3":
+		if modo != 0:
+			print("Opción inválida, ingrese un número válido")
+			modo = str(input("Modo deseado: "))
+		else:
+			modo = str(input("Modo deseado: "))
+
+	if modo == "1":
+		crearSopa(list)
+	elif modo == "2":
+		buscarPalabras(list, tablero)
+	else:
+		exit()
+
+# Código opción 1
+
+def crearSopa(list):
+
 	direcciones = ["hori1", "hori2", "vert1", "vert2", "diag"]
 	tablero = crearTablero(list)
 	listaPalabras = sorted(list, key=len, reverse=True)
@@ -23,9 +49,8 @@ def main(list):
 		else:
 			colocarPalabra(tablero, palabra, direccion, pos)
 
-	#for i in range(0, len(tablero)):
-	#	if tablero[i] == "":
-	#		tablero[i] = choice(letras)
+	rellenarTablero(tablero)
+	print("\n")
 	imprimirTablero(tablero)
 
 def crearTablero(list):
@@ -38,10 +63,32 @@ def imprimirTablero(tablero):
 
 	rt = int(sqrt(len(tablero)))
 	filas = []
+	tableroStr = []
+
+	# Convierte la lista plana en lista de filas (matriz)
 	for i in range(0, rt):
 		filas += [tablero[i * rt: (i * rt) + rt]]
-	for fila in filas:
-		print(fila)
+	# Convierte las filas en string (ahora el tablero es lista de strings)
+	for i in range(0, len(filas)):
+		tableroStr += [listaAString(filas[i])]
+	# Imprime cada fila como string
+	for str in tableroStr:
+		print(str)
+
+def listaAString(list):
+	str = ""
+	for i in range(0, len(list)):
+		str = str + list[i] + " "
+
+	return str
+
+def rellenarTablero(tablero):
+
+	letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
+
+	for i in range(0, len(tablero)):
+		if tablero[i] == "":
+			tablero[i] = choice(letras)
 
 def palabraMasLarga(list):
 
@@ -56,6 +103,7 @@ def lugaresDisponibles(tablero, palabra, direccion):
 	rt = int(sqrt(len(tablero)))
 	length = len(palabra)
 	pos = []
+
 	if direccion == "diag":
 		for i in range(0, len(tablero)):
 			final = i + (length-1)*(rt+1)
@@ -89,6 +137,7 @@ def diagValida(tablero, palabra, casilla):
 	length = len(palabra)
 	filas = []
 	listaNum = [n for n in range(0, rt**2)]
+
 	for i in range(0, rt):
 		filas += [listaNum[i * rt: (i * rt) + rt]]
 	for j in range(0, rt):
@@ -101,6 +150,7 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 	rt = int(sqrt(len(tablero)))
 	length = len(palabra)
 	contador = 0
+
 	if direccion == "diag":
 		for i in range(0, length):
 			tablero[pos + (rt+1)*i] = palabra[contador]
@@ -114,5 +164,14 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 			tablero[pos+i] = palabra[contador]
 			contador += 1
 
-main(["TESTING", "HOLA", "PRUEBA", "WIRZT", "CASA", "BARCO"])
-#main(["TESTING", "HOLA", "PRUEBA", "WIRZT", "CASA", "BARCO", "DIAGONAL", "TELE", "PUÑO", "GANCHO"])
+# Código opción 2:
+
+def buscarPalabras(list, tablero):
+	print(list)
+	imprimirTablero(tablero)
+
+#crearSopa(["TESTING", "HOLA", "PRUEBA", "WIRZT", "CASA", "BARCO"])
+#crearSopa(["TESTING", "HOLA", "PRUEBA", "WIRZT", "CASA", "BARCO", "DIAGONAL", "TELE", "PUÑO", "GANCHO"])
+tableroPrueba = ['Y', 'L', 'G', 'A', 'W', 'O', 'J', 'G', 'A', 'N', 'S', 'I', 'P', 'Z', 'O', 'B', 'I', 'A', 'R', 'C', 'D', 'C', 'E', 'T', 'C', 'Z', 'X', 'E', 'R', 'U', 'S', 'M', 'T', 'Z', 'S', 'A', 'R', 'E', 'A', 'L', 'O', 'H', 'B', 'P', 'T', 'J', 'D', 'G', 'M']
+main(["TESTING", "HOLA", "PRUEBA", "WIRZT", "CASA", "BARCO"], tableroPrueba)
+#imprimirTablero(tableroPrueba)
