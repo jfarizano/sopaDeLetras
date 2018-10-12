@@ -23,9 +23,9 @@ def main(list):
 		else:
 			colocarPalabra(tablero, palabra, direccion, pos)
 
-	for i in range(0, len(tablero)):
-		if tablero[i] == "":
-			tablero[i] = choice(letras)
+	#for i in range(0, len(tablero)):
+	#	if tablero[i] == "":
+	#		tablero[i] = choice(letras)
 	imprimirTablero(tablero)
 
 def crearTablero(list):
@@ -114,4 +114,5 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 			tablero[pos+i] = palabra[contador]
 			contador += 1
 
-main(["TESTING", "HOLA", "PRUEBA"])
+main(["TESTING", "HOLA", "PRUEBA", "WIRZT", "CASA", "BARCO"])
+#main(["TESTING", "HOLA", "PRUEBA", "WIRZT", "CASA", "BARCO", "DIAGONAL", "TELE", "PUÑO", "GANCHO"])
