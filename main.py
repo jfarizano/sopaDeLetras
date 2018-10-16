@@ -2,8 +2,15 @@ import sys
 from random import *
 from math import *
 
+# Representación de datos
 """
-Funcion principal. Se encarga de darle un menu al usuario y que pueda elegir si crear o buscar palabras en un tablero
+Representamos una sopa de letras de tamaño nxn mediante una lista de tamaño n², donde cada elemento representa
+una letra de la misma.
+Por ejemplo, el tablero: A B C
+						 D E F
+						 G H I
+es de tamaño 3x3, por lo tanto tiene 9 elementos y está representado por la lista:
+["A", "B", "C", "D", "E", "F", "G", "H", "I"]
 """
 def main(lista, tablero = []):
 
