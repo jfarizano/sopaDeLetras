@@ -4,6 +4,6 @@ Para agregar/boludeces:
 - Agregar testing usando PyTest
 - Printear tablero como strings # Hecho
 - Entrada y salida con archivos
-- Cambiar nombre variable rt a uno más significativo
+- Cambiar nombre variable rt a uno más significativo #Hecho
 - Comentar
-- Opción 2 (Buscar palabra en la sopa y devolver posición)
+- Opción 2 (Buscar palabra en la sopa y devolver posición) #Hecho
