@@ -13,6 +13,8 @@ es de tamaño 3x3, por lo tanto tiene 9 elementos y está representado por la li
 ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
 """
 
+# Funciones principales
+
 def main():
 	"""
 	main: File File -> File
@@ -33,8 +35,7 @@ def main():
 	# Llama a la función para elegir el modo
 	sopaDeLetras(listaPalabras, tablero)
 
-
-def sopaDeLetras(listaPalabras, tablero = []):
+def sopaDeLetras(listaPalabras, tablero):
 	"""
 	sopaDeLetras: List(String) List(String) -> String
 	Dada una lista de palabras o una lista de palabras y una lista que representa un tablero,
@@ -228,7 +229,6 @@ def diagValida(tablero, palabra, casilla):
 			if casilla == filas[j][k] and k <= (raiz-length):
 				return True
 
-
 def colocarPalabra(tablero, palabra, direccion, pos):
 	"""
 	Dado el tabalero, una palabra, una dirección y una casilla, modifica el tablero con la palabra colocada en la
@@ -253,6 +253,7 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 			contador += 1
 
 # Código opción 2:
+
 def buscarPalabras(palabras, tablero):
 	"""
 	buscarPalabras: List(String) List(String) -> List(Dictionary(String String String String String Int))
@@ -260,7 +261,6 @@ def buscarPalabras(palabras, tablero):
 	y la dirección en que se encuentran esas palabras.
 	"""
 
-	direcciones = ["hori1", "hori2", "vert1", "vert2", "diag"]
 	encuentros = []
 
 	for palabra in palabras:
@@ -268,13 +268,17 @@ def buscarPalabras(palabras, tablero):
 		raiz = int(sqrt(len(tablero)))
 		for i in range(0, len(tablero)):
 			if ''.join(tablero[i:i+length]) in [palabra, palabra[::-1]]:
-				encuentros += [{'palabra': palabra, 'dir': 'horizontal' , 'pos': i}]
+				encuentros += [{'palabra': palabra, 'dir': 'Horizontal' , 'pos': i}]
 			elif ''.join(tablero[i::raiz][:length]) in [palabra, palabra[::-1]]:
-				encuentros += [{'palabra': palabra, 'dir': 'vertical' , 'pos': i}]
+				encuentros += [{'palabra': palabra, 'dir': 'Vertical' , 'pos': i}]
 			elif ''.join(tablero[i::1+raiz][:length]) in [palabra, palabra[::-1]]:
-				encuentros += [{'palabra': palabra, 'dir': 'diag' , 'pos': i}]
-	[print(encuentro) for encuentro in encuentros]
-	return encuentros
+				encuentros += [{'palabra': palabra, 'dir': 'Diagonal' , 'pos': i}]
+
+	# Imprime las posiciones de cada palabra de forma legible
+	for encuentro in encuentros:
+		print("La palabra " + encuentro['palabra'] + " se encuentra en la posición " + str(encuentro['pos']) + " de forma " + encuentro['dir'])
+
+
 
 # Llamada para iniciar el programa
 main()

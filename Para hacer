@@ -1,9 +1,3 @@
-Bugs:
--Si una palabra no entra de ninguna forma, la función se cuelga en el while (disponibles == [] para toda dirección) # ¿Hecho?
-Para agregar/boludeces:
-- Agregar testing usando PyTest
-- Printear tablero como strings # Hecho
-- Entrada y salida con archivos # Hecho
-- Cambiar nombre variable rt a uno más significativo #Hecho
-- Comentar
-- Opción 2 (Buscar palabra en la sopa y devolver posición) #Hecho
+Falta nomas:
+- Agregar testing
+- ¿Más comentario?
