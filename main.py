@@ -25,7 +25,6 @@ def main():
 	with open("palabras.txt", "r") as palabrasArchivo:
 		for palabra in palabrasArchivo.readlines():
 			listaPalabras += [palabra.upper().strip()]
-		palabrasArchivo.close()
 
 	# Lee el archivo con el tablero (tablero.txt), y crea una lista con cada caracter alfanumérico
 	with open("tablero.txt", "r") as tableroArchivo:
@@ -157,8 +156,7 @@ def rellenarTablero(tablero):
 
 	for i in range(0, len(tablero)):
 		if tablero[i] == "":
-			#tablero[i] = choice(letras)
-			tablero[i] = " "
+			tablero[i] = choice(letras)
 	return tablero
 
 def sumaLongitudesPalabras(lista):
