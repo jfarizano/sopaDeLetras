@@ -28,7 +28,7 @@ def main(lista, tablero = []):
 			modo = str(input("Modo deseado: "))
 
 	if modo == "1":
-		crearSopa(lista)
+		imprimirTablero(crearSopa(lista))
 	elif modo == "2":
 		buscarPalabras(lista, tablero)
 	elif modo == "3":
@@ -215,10 +215,6 @@ def buscarPalabras(palabras, tablero):
 				encuentros += [{'palabra': palabra, 'dir': 'diag' , 'pos': i}]
 	[print(encuentro) for encuentro in encuentros]
 	return encuentros
-		
-	print(palabras)
-	imprimirTablero(tablero)
-
 """
 Inicializa el programa con unos valores predefinidos para pruebas
 """
