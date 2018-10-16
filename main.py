@@ -24,7 +24,7 @@ def main():
 	# Lee el archivo con las palabras (palabras.txt), y crea una lista de palabras con las mismas dadas
 	with open("palabras.txt", "r") as palabrasArchivo:
 		for palabra in palabrasArchivo.readlines():
-			listaPalabras += [palabra.strip()]
+			listaPalabras += [palabra.upper().strip()]
 		palabrasArchivo.close()
 
 	# Lee el archivo con el tablero (tablero.txt), y crea una lista con cada caracter alfanumérico
@@ -120,7 +120,7 @@ def crearSopaVacia(lista):
 	n es la longitud de la palabras más larga de la lista dada más un entero en el rango [2,6]
 	"""
 
-	tamaño = palabraMasLarga(lista) + randint(2,7)
+	tamaño = ceil(sqrt(sumaLongitudesPalabras(lista))) + randint(2,7)
 	tablero = [""]*tamaño**2
 	return tablero
 
@@ -157,20 +157,21 @@ def rellenarTablero(tablero):
 
 	for i in range(0, len(tablero)):
 		if tablero[i] == "":
-			tablero[i] = choice(letras)
+			#tablero[i] = choice(letras)
+			tablero[i] = " "
 	return tablero
 
-def palabraMasLarga(lista):
+def sumaLongitudesPalabras(lista):
 	"""
-	palabrasMasLarga: List(String) -> Int
-	Dada una lista de palabras, devuelve la longitud de la palabra más larga en la misma.
+	sumaLongitudesPalabras: List(String) -> Int
+	Dada una lista de palabras, devuelve la suma de la longitud de todas las palabras en la misma.
 	"""
 
-	max = 0
+	suma = 0
+
 	for palabra in lista:
-		if len(palabra) > max:
-			max = len(palabra)
-	return max
+		suma += len(palabra)
+	return suma
 
 def lugaresDisponibles(tablero, palabra, direccion):
 	"""
@@ -277,6 +278,5 @@ def buscarPalabras(palabras, tablero):
 	[print(encuentro) for encuentro in encuentros]
 	return encuentros
 
-
-
+# Llamada para iniciar el programa
 main()
