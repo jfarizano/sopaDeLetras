@@ -66,7 +66,7 @@ def crearSopa(lista):
 			else:
 				colocarPalabra(tablero, palabra, direccion, pos)
 	
-	imprimirTablero(rellenarTablero(tablero))
+	rellenarTablero(tablero)
 	return rellenarTablero(tablero)
 
 """
