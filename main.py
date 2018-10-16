@@ -12,7 +12,36 @@ Por ejemplo, el tablero: A B C
 es de tamaño 3x3, por lo tanto tiene 9 elementos y está representado por la lista:
 ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
 """
-def main(lista, tablero = []):
+
+def main():
+	"""
+	main: File File -> File
+	Dados los archivos de textos que representan la lista de palabras y una sopa de letras, inicia el programa
+
+	"""
+	listaPalabras = []
+
+	# Lee el archivo con las palabras (palabras.txt), y crea una lista de palabras con las mismas dadas
+	with open("palabras.txt", "r") as palabrasArchivo:
+		for palabra in palabrasArchivo.readlines():
+			listaPalabras += [palabra.strip()]
+		palabrasArchivo.close()
+
+	# Lee el archivo con el tablero (tablero.txt), y crea una lista con cada caracter alfanumérico
+	with open("tablero.txt", "r") as tableroArchivo:
+		tablero = [char for char in tableroArchivo.read().split() if len(char) == 1]
+
+	# Llama a la función para elegir el modo
+	sopaDeLetras(listaPalabras, tablero)
+
+
+def sopaDeLetras(listaPalabras, tablero = []):
+	"""
+	sopaDeLetras: List(String) List(String) -> String
+	Dada una lista de palabras o una lista de palabras y una lista que representa un tablero,
+	da a elegir al usuario si quiere crear una sopa de letras con la lista de palabras dadas o buscar la posición de
+	las palabras dadas en el tablero dado.
+	"""
 
 	modo = 0
 
@@ -35,21 +64,30 @@ def main(lista, tablero = []):
 			modo = str(input("Modo deseado: "))
 
 	if modo == "1":
-		imprimirTablero(crearSopa(lista))
+		tablero = tableroAString(crearSopa(listaPalabras))
+
+		# Escribe el tablero al archivo tablero.txt
+		with open("tablero.txt", "w") as tableroArchivo:
+			tableroArchivo.write(tablero)
+
+		print("\nTablero creado, revise el archivo tablero.txt que se encuentra en el directorio del programa")
 	elif modo == "2":
-		buscarPalabras(lista, tablero)
+		return buscarPalabras(listaPalabras, tablero)
 	elif modo == "3":
 		exit()
 
 # Código opción 1
 
-"""
-Crea una sopa de letras en base a una lista de strings
-"""
 def crearSopa(lista):
+	"""
+	crearSopa: List(String) -> List(String)
+	Dada una lista de palabras. devuelve una sopa de letras con todas las palabras de la misma
+	"""
 
 	direcciones = ["hori1", "hori2", "vert1", "vert2", "diag"]
-	tablero = crearTablero(lista)
+	tablero = crearSopaVacia(lista)
+
+	# Ordena la lista por longitudd de palabra, en orden descendiente
 	listaPalabras = sorted(lista, key=len, reverse=True)
 
 	for palabra in listaPalabras:
@@ -72,42 +110,48 @@ def crearSopa(lista):
 					colocarPalabra(tablero, palabra, direccion, pos)
 			else:
 				colocarPalabra(tablero, palabra, direccion, pos)
-	
-	rellenarTablero(tablero)
+
 	return rellenarTablero(tablero)
 
-"""
-Crea un tablero vacio del tamaño necesario en base a una lista de palabras
-"""
-def crearTablero(lista):
+def crearSopaVacia(lista):
+	"""
+	crearSopaVacia: List(String) -> List(String)
+	Dada una lista de palabras, devuelve una lista de tamaño n² que representa el tablero de la sopa de letras, donde
+	n es la longitud de la palabras más larga de la lista dada más un entero en el rango [2,6]
+	"""
 
 	tamaño = palabraMasLarga(lista) + randint(2,7)
 	tablero = [""]*tamaño**2
 	return tablero
 
-"""
-Imprime la sopa de letras en una forma placentera de leer para el usuario
-"""
-def imprimirTablero(tablero):
+def tableroAString(tablero):
+	"""
+	tableroAString: List(String) -> List(String)
+	Dado el tablero, lo convierte a un string
+	"""
 
 	raiz = int(sqrt(len(tablero)))
 	filas = []
-	tableroStr = []
+	tableroFilasStr = []
+	tableroStr = ""
 
 	# Convierte la lista plana en lista de filas (matriz)
 	for i in range(0, raiz):
 		filas += [tablero[i * raiz: (i * raiz) + raiz]]
-	# Convierte las filas en string (ahora el tablero es lista de strings)
+	# Convierte las lista en una nueva lista donde cada elemento es un string que representa la fila
 	for i in range(0, len(filas)):
-		tableroStr += [' '.join(filas[i])]
-	# Imprime cada fila como string
-	for str in tableroStr:
-		print(str)
+		tableroFilasStr += [' '.join(filas[i])]
+	# Convierte la lista de filas en un tablero representado por un string
+	for i in range(0, len(tableroFilasStr)):
+		tableroStr = tableroStr + tableroFilasStr[i] + "\n"
 
-"""
-Rellena los espacios vacios de una sopa de letras con letras al azar
-"""
+	return tableroStr
+
 def rellenarTablero(tablero):
+	"""
+	rellenarTablero: List(String) -> List(String)
+	Dado un tablero, rellena todas las posiciones vacías con una letra del alfabeto al azar
+	"""
 
 	letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 
@@ -116,20 +160,24 @@ def rellenarTablero(tablero):
 			tablero[i] = choice(letras)
 	return tablero
 
-"""
-Devuelve un entero con el largo del string de mayor longitud de una lista
-"""
 def palabraMasLarga(lista):
+	"""
+	palabrasMasLarga: List(String) -> Int
+	Dada una lista de palabras, devuelve la longitud de la palabra más larga en la misma.
+	"""
+
 	max = 0
 	for palabra in lista:
 		if len(palabra) > max:
 			max = len(palabra)
 	return max
 
-"""
-Devuelve una lista de los posibles lugares donde una palabra se puede insertar, dada una direccion.
-"""
 def lugaresDisponibles(tablero, palabra, direccion):
+	"""
+	lugaresDisponibles: List(String) String String -> List(Int)
+	Dado el tablero, la palabra a colocar y la dirección en que se desea colocar, devuelve las posiciones iniciales
+	posibles donde la palabra se puede colocar en esa direcciṕn en el tablero
+	"""
 
 	raiz = int(sqrt(len(tablero)))
 	length = len(palabra)
@@ -140,7 +188,7 @@ def lugaresDisponibles(tablero, palabra, direccion):
 			final = i + (length-1)*(raiz+1)
 			if tablero[i:final+1:raiz+1] == [""]*length and diagValida(tablero, palabra, i):
 				pos += [i]
-	elif direccion[:4] == "veraiz":
+	elif direccion[:4] == "vert":
 		for i in range(0, (raiz-length+1)*raiz):
 			if i == 0:
 				ultima = raiz * length-1
@@ -162,10 +210,13 @@ def lugaresDisponibles(tablero, palabra, direccion):
 					pos += [(i*raiz)+j]
 	return pos
 
-"""
-Devuelve un booleano que indica si una palabra dada entra en la diagonal de la casilla del tablero dado
-"""
 def diagValida(tablero, palabra, casilla):
+	"""
+	diagValida: List(String) String Int -> Boolean
+	Dado el tablero, una palabra y un número que representa una posición del tablero, devuelve True si la palabra se
+	puede colocar en la diagonal de esa casilla, en caso contrario devuelve False
+	"""
+
 	raiz = int(sqrt(len(tablero)))
 	length = len(palabra)
 	filas = []
@@ -178,10 +229,12 @@ def diagValida(tablero, palabra, casilla):
 			if casilla == filas[j][k] and k <= (raiz-length):
 				return True
 
-"""
-Inserta la palabra en el tablero en la direccion y posicion dados
-"""
+
 def colocarPalabra(tablero, palabra, direccion, pos):
+	"""
+	Dado el tabalero, una palabra, una dirección y una casilla, modifica el tablero con la palabra colocada en la
+	dirección y posición dada.
+	"""
 
 	raiz = int(sqrt(len(tablero)))
 	length = len(palabra)
@@ -201,11 +254,12 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 			contador += 1
 
 # Código opción 2:
-
-"""
-Busca una lista de palabras en la sopa, devuelve una lista con cada palabra encontrada, su posicion y direccion
-"""
 def buscarPalabras(palabras, tablero):
+	"""
+	buscarPalabras: List(String) List(String) -> List(Dictionary(String String String String String Int))
+	Dada una lista de palabras y una sopa de letras, devuelve una lista de diccionarios, que representan la posición
+	y la dirección en que se encuentran esas palabras.
+	"""
 
 	direcciones = ["hori1", "hori2", "vert1", "vert2", "diag"]
 	encuentros = []
@@ -222,19 +276,7 @@ def buscarPalabras(palabras, tablero):
 				encuentros += [{'palabra': palabra, 'dir': 'diag' , 'pos': i}]
 	[print(encuentro) for encuentro in encuentros]
 	return encuentros
-"""
-Inicializa el programa con unos valores predefinidos para pruebas
-"""
-def start():
-	palabrasPrueba = []
-	
-	#tableroPrueba = ['Y', 'L', 'G', 'A', 'W', 'O', 'J', 'G', 'A', 'N', 'S', 'I', 'P', 'Z', 'O', 'B', 'I', 'A', 'R', 'C', 'D', 'C', 'E', 'T', 'C', 'Z', 'X', 'E', 'R', 'U', 'S', 'M', 'T', 'Z', 'S', 'A', 'R', 'E', 'A', 'L', 'O', 'H', 'B', 'P', 'T', 'J', 'D', 'G', 'M']
-	
-	with open("palabras", "r") as palabras:
-		for palabra in palabras.readlines():
-			palabrasPrueba += [palabra.strip()]
-		palabras.close()
-	tableroPrueba = crearSopa(palabrasPrueba)
-	main(palabrasPrueba, tableroPrueba)
 
-start()
+
+
+main()
