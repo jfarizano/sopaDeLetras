@@ -26,7 +26,7 @@ que se encuentra en "tablero.txt" es válido y contiene las palabras a buscar.
 
 def main():
 	"""
-	main: File File -> File
+	main: File File -> File File
 	Abre los archivos que contienen al tablero y la lista de palabras (si no existen, los crea),
 	los convierte en lista e inicia el programa
 	"""
@@ -52,7 +52,7 @@ def main():
 
 def sopaDeLetras(listaPalabras, tablero):
 	"""
-	sopaDeLetras: List(String) List(String) -> String
+	sopaDeLetras: List(String) List(String) -> None
 	Dada una lista de palabras o una lista de palabras y una lista que representa un tablero,
 	da a elegir al usuario si quiere crear una sopa de letras con la lista de palabras dadas 
 	o buscar la posición de	las palabras dadas en el tablero dado.
@@ -93,7 +93,7 @@ def sopaDeLetras(listaPalabras, tablero):
 		if listaPalabras == [] or tablero == []:
 			print("Error: archivo palabras.txt y/o tablero.txt vacío/s")
 		else:
-			return buscarPalabras(listaPalabras, tablero)
+			buscarPalabras(listaPalabras, tablero)
 	elif modo == "3":
 		exit()
 
@@ -105,21 +105,20 @@ def crearSopa(lista):
 	Dada una lista de palabras. devuelve una sopa de letras con todas las palabras de la misma
 	"""
 
-	direcciones = ["hori1", "hori2", "vert1", "vert2", "diag"]
 	tablero = crearSopaVacia(lista)
 
 	# Ordena la lista por longitud de palabra, en orden descendiente
 	listaPalabras = sorted(lista, key=len, reverse=True)
 
 	for palabra in listaPalabras:
+		direcciones = ["hori1", "hori2", "vert1", "vert2", "diag"]
 		disponibles = []
-		intentos = 0
 
-		while disponibles == [] and intentos <= 10:
+		while disponibles == [] and direcciones != []:
 			direccion = choice(direcciones)
 			disponibles = lugaresDisponibles(tablero, palabra, direccion)
-			intentos += 1
-		if intentos > 10:
+			direcciones.remove(direccion)
+		if direcciones == [] or disponibles == []:
 			print("No se pudo insertar: ", palabra)
 		else:
 			pos = choice(disponibles)
@@ -160,7 +159,7 @@ def palabraMasLarga(lista):
 
 def tableroAString(tablero):
 	"""
-	tableroAString: List(String) -> List(String)
+	tableroAString: List(String) -> String
 	Dado el tablero, lo convierte a un string
 	"""
 
@@ -329,7 +328,7 @@ def diagValida(tablero, palabra, pos):
 
 def colocarPalabra(tablero, palabra, direccion, pos):
 	"""
-	colocarPalabra: List(String) String String Int -> List(String)
+	colocarPalabra: List(String) String String Int -> None
 	Dado el tabalero, una palabra, una dirección y una casilla, modifica el tablero 
 	con la palabra colocada en la dirección y posición dada.
 	"""
@@ -355,24 +354,34 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 
 def buscarPalabras(palabras, tablero):
 	"""
-	buscarPalabras: List(String) List(String) -> List(Dictionary(String String String String String Int))
+	buscarPalabras: List(String) List(String) -> None
 	Dada una lista de palabras y una sopa de letras, devuelve una lista de diccionarios, 
 	que representan la posición y la dirección en que se encuentran esas palabras.
 	"""
 	
 	encuentros = []
+	noEncontradas = []
 
 	for palabra in palabras:
+		encontrada = 0
 		length = len(palabra)
 		raiz = int(sqrt(len(tablero)))
 		for i in range(0, len(tablero)):
 			if ''.join(tablero[i:i+length]) in [palabra, palabra[::-1]]:
 				encuentros += [{'palabra': palabra, 'dir': 'horizontal' , 'pos': i}]
+				encontrada = 1
 			elif ''.join(tablero[i::raiz][:length]) in [palabra, palabra[::-1]]:
 				encuentros += [{'palabra': palabra, 'dir': 'vertical' , 'pos': i}]
+				encontrada = 1
 			elif ''.join(tablero[i::1+raiz][:length]) in [palabra, palabra[::-1]]:
 				encuentros += [{'palabra': palabra, 'dir': 'diagonal' , 'pos': i}]
-
+				encontrada = 1
+		if encontrada == 0:
+			noEncontradas += [palabra]
+	
+	for palabra in noEncontradas:
+		print("No se pudo encontrar la palabra:", palabra)
+	
 	# Imprime las posiciones de cada palabra de forma legible
 	for encuentro in encuentros:
 		coordenadas = obtenerCoordenada(tablero, encuentro['pos'])
@@ -382,7 +391,7 @@ def buscarPalabras(palabras, tablero):
 
 def obtenerCoordenada(tablero, pos):
 	"""
-	obtenerCoordenadas: List(String) Int -> Int Int
+	obtenerCoordenadas: List(String) Int -> (Int, Int)
 	Dada una sopa de letras representada mediante una lista plana y una posición en esa lista, 
 	devuelve las coordenadas x e y de esa posición si la lista fuera una matriz
 	"""
@@ -391,7 +400,6 @@ def obtenerCoordenada(tablero, pos):
 	raiz = int(sqrt(len(tablero)))
 	listaNum = []
 	filas = []
-	coordenadas = []
 
 	for i in range(0, tamaño):
 		listaNum += [i]
@@ -400,7 +408,7 @@ def obtenerCoordenada(tablero, pos):
 	for i in range(0, raiz):
 		for j in range(0, raiz):
 			if filas[i][j] == pos:
-				coordenadas += [i] + [j]
+				coordenadas = (i, j)
 				return coordenadas
 		
 # Llamada para iniciar el programa
