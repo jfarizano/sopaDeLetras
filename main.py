@@ -1,3 +1,8 @@
+"""
+Trabajo práctico N° 1 - Sopa de letras - Programación 2 2018
+Integrantes del grupo: Farizano, Juan Ignacio - Pereyra, Alejo
+"""
+
 import sys
 from random import *
 from math import *
@@ -26,8 +31,8 @@ que se encuentra en "tablero.txt" es válido y contiene las palabras a buscar.
 
 def main():
 	"""
-	main: File File -> File File
-	Abre los archivos que contienen al tablero y la lista de palabras (si no existen, los crea),
+	main: None -> File File
+	Abre temporalmente los archivos que contienen al tablero y la lista de palabras (si no existen, los crea),
 	los convierte en lista e inicia el programa
 	"""
 
@@ -177,7 +182,10 @@ def tableroAString(tablero):
 		tableroFilasStr += [' '.join(filas[i])]
 	# Convierte la lista de filas en un tablero representado por un string
 	for i in range(0, len(tableroFilasStr)):
-		tableroStr = tableroStr + tableroFilasStr[i] + "\n"
+		if i != len(tableroFilasStr)-1:
+			tableroStr = tableroStr + tableroFilasStr[i] + "\n"
+		else:
+			tableroStr = tableroStr + tableroFilasStr[i]
 
 	return tableroStr
 
@@ -219,13 +227,13 @@ def lugaresDisponibles(tablero, palabra, direccion):
 
 	if direccion == "diag":
 		for i in range(0, len(tablero)):
-			final = (length-1)*(raiz+1) + i +1
+			final = (length-1)*(raiz+1) + i + 1
 			diagonal = tablero[i:final:raiz+1]
 			if diagonalDisponible(palabra, diagonal) and diagValida(tablero, palabra, i):
 				pos += [i]
 	elif direccion[:4] == "vert":
 		for i in range(0, (raiz-length+1)*raiz):
-			ultima = (raiz * length-1) + i
+			ultima = (raiz * (length-1)) + i + 1
 			columna = tablero[i:ultima:raiz]
 			if len(columna) == len(palabra):
 				if columnaDisponible(palabra, columna, direccion):
@@ -369,16 +377,18 @@ def buscarPalabras(palabras, tablero):
 		raiz = int(sqrt(len(tablero)))
 		for i in range(0, len(tablero)):
 			if ''.join(tablero[i:i+length]) == palabra:
-				encuentros += [{'palabra': palabra, 'dir': 'horizontal' , 'pos': i}]
+				encuentros += [{'palabra': palabra, 'dir': 'horizontal, de izquierda a derecha' , 'pos': i}]
 				encontrada = 1
 			elif ''.join(tablero[i:i+length])  == palabra[::-1]:
-				encuentros += [{'palabra': palabra, 'dir': 'horizontal Inversa' , 'pos': i}]
+				primerCaracter = i+length-1
+				encuentros += [{'palabra': palabra, 'dir': 'horizontal, de derecha a izquierda' , 'pos': primerCaracter}]
 				encontrada = 1
 			elif ''.join(tablero[i::raiz][:length]) == palabra:
-				encuentros += [{'palabra': palabra, 'dir': 'vertical' , 'pos': i}]
+				encuentros += [{'palabra': palabra, 'dir': 'vertical, de arriba a abajo' , 'pos': i}]
 				encontrada = 1
 			elif ''.join(tablero[i::raiz][:length]) == palabra[::-1]:
-				encuentros += [{'palabra': palabra, 'dir': 'vertical Inversa' , 'pos': i}]
+				primerCaracter = (raiz * (length-1)) + i
+				encuentros += [{'palabra': palabra, 'dir': 'vertical, de abajo a arriba' , 'pos': primerCaracter}]
 				encontrada = 1
 			elif ''.join(tablero[i::1+raiz][:length]) == palabra:
 				encuentros += [{'palabra': palabra, 'dir': 'diagonal' , 'pos': i}]
@@ -391,6 +401,7 @@ def buscarPalabras(palabras, tablero):
 	
 	# Imprime las posiciones de cada palabra de forma legible
 	for encuentro in encuentros:
+		# Coordenadas contando desde 0
 		coordenadas = obtenerCoordenada(tablero, encuentro['pos'])
 		fila = str(coordenadas[0])
 		columna = str(coordenadas[1])
@@ -417,7 +428,6 @@ def obtenerCoordenada(tablero, pos):
 			if filas[i][j] == pos:
 				coordenadas = (i, j)
 				return coordenadas
-		
 # Llamada para iniciar el programa
 
 main()
