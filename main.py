@@ -27,9 +27,10 @@ que se encuentra en "tablero.txt" es válido y contiene las palabras a buscar.
 def main():
 	"""
 	main: File File -> File
-	Dados los archivos de textos que representan la lista de palabras y una sopa de letras, inicia el programa
-
+	Abre los archivos que contienen al tablero y la lista de palabras (si no existen, los crea),
+	los convierte en lista e inicia el programa
 	"""
+
 	listaPalabras = []
 
 	# Si no existen alguno de los archivos, crea uno vacío
@@ -53,8 +54,8 @@ def sopaDeLetras(listaPalabras, tablero):
 	"""
 	sopaDeLetras: List(String) List(String) -> String
 	Dada una lista de palabras o una lista de palabras y una lista que representa un tablero,
-	da a elegir al usuario si quiere crear una sopa de letras con la lista de palabras dadas o buscar la posición de
-	las palabras dadas en el tablero dado.
+	da a elegir al usuario si quiere crear una sopa de letras con la lista de palabras dadas 
+	o buscar la posición de	las palabras dadas en el tablero dado.
 	"""
 
 	modo = 0
@@ -135,8 +136,10 @@ def crearSopa(lista):
 def crearSopaVacia(lista):
 	"""
 	crearSopaVacia: List(String) -> List(String)
-	Dada una lista de palabras, devuelve una lista de tamaño n² que representa el tablero de la sopa de letras, donde
-	n es la longitud de la palabras más larga de la lista dada más un entero en el rango [2,6]
+	Dada una lista de palabras, devuelve una lista de tamaño n² cuyos elementos son el string vacío,
+	que representa el tablero de la sopa de letras, donde n es el máximo entre la longitud de la palabras
+	más larga de la lista dada o la raíz de la suma de la longitudes de todas las palabras
+	más un entero en el rango [2,6]
 	"""
 
 	tamaño = max(ceil(sqrt(sumaLongitudesPalabras(lista))), palabraMasLarga(lista)) + randint(2,7)
@@ -206,8 +209,8 @@ def sumaLongitudesPalabras(lista):
 def lugaresDisponibles(tablero, palabra, direccion):
 	"""
 	lugaresDisponibles: List(String) String String -> List(Int)
-	Dado el tablero, la palabra a colocar y la dirección en que se desea colocar, devuelve las posiciones iniciales
-	posibles donde la palabra se puede colocar en esa dirección en el tablero
+	Dado el tablero, la palabra a colocar y la dirección en que se desea colocar, devuelve 
+	las posiciones iniciales posibles donde la palabra se puede colocar en esa dirección en el tablero
 	"""
 
 	raiz = int(sqrt(len(tablero)))
@@ -243,8 +246,8 @@ def lugaresDisponibles(tablero, palabra, direccion):
 def filaDisponible(palabra, fila, direccion):
 	"""
 	filaDisponible: List(String) String List(String) String -> Boolean
-	Dada la palabra a colocar y la fila en que se desea colocar, devuelve True si es posible colocarla en la dirección
-	y sentido dado, en caso contrario devuelve False
+	Dada la palabra a colocar y la fila en que se desea colocar, devuelve True si es posible 
+	colocarla en la dirección y sentido dado, en caso contrario devuelve False
 	"""
 
 	contador = 0
@@ -266,8 +269,8 @@ def filaDisponible(palabra, fila, direccion):
 def columnaDisponible(palabra, columna, direccion):
 	"""
 	columnaDisponible: List(String) String List(String) String -> Boolean
-	Dada la palabra a colocar y la columna en que se desea colocar, devuelve True si es posible colocarla en la dirección
-	y sentido dado, en caso contrario devuelve False
+	Dada la palabra a colocar y la columna en que se desea colocar, devuelve True 
+	si es posible colocarla en la dirección	y sentido dado, en caso contrario devuelve False
 	"""
 
 	contador = 0
@@ -288,8 +291,8 @@ def columnaDisponible(palabra, columna, direccion):
 def diagonalDisponible(palabra, diagonal):
 	"""
 	diagonalDisponible: List(String) String List(String) String -> Boolean
-	Dada la palabra a colocar y la diagonal en que se desea colocar, devuelve True si es posible colocarla en la dirección
-	y sentido dado, en caso contrario devuelve False
+	Dada la palabra a colocar y la diagonal en que se desea colocar, devuelve True si es 
+	posible colocarla en la dirección y sentido dado, en caso contrario devuelve False
 	"""
 
 	letras = [letra for letra in palabra]
@@ -307,8 +310,9 @@ def diagonalDisponible(palabra, diagonal):
 def diagValida(tablero, palabra, pos):
 	"""
 	diagValida: List(String) String Int -> Boolean
-	Dado el tablero, una palabra y un número que representa una posición del tablero, devuelve True si la palabra se
-	puede colocar en la diagonal de esa casilla, en caso contrario devuelve False
+	Dado el tablero, una palabra y un número que representa una posición del tablero, 
+	devuelve True si la palabra se puede colocar en la diagonal de esa casilla, 
+	en caso contrario devuelve False
 	"""
 
 	raiz = int(sqrt(len(tablero)))
@@ -326,8 +330,8 @@ def diagValida(tablero, palabra, pos):
 def colocarPalabra(tablero, palabra, direccion, pos):
 	"""
 	colocarPalabra: List(String) String String Int -> List(String)
-	Dado el tabalero, una palabra, una dirección y una casilla, modifica el tablero con la palabra colocada en la
-	dirección y posición dada.
+	Dado el tabalero, una palabra, una dirección y una casilla, modifica el tablero 
+	con la palabra colocada en la dirección y posición dada.
 	"""
 
 	raiz = int(sqrt(len(tablero)))
@@ -352,8 +356,8 @@ def colocarPalabra(tablero, palabra, direccion, pos):
 def buscarPalabras(palabras, tablero):
 	"""
 	buscarPalabras: List(String) List(String) -> List(Dictionary(String String String String String Int))
-	Dada una lista de palabras y una sopa de letras, devuelve una lista de diccionarios, que representan la posición
-	y la dirección en que se encuentran esas palabras.
+	Dada una lista de palabras y una sopa de letras, devuelve una lista de diccionarios, 
+	que representan la posición y la dirección en que se encuentran esas palabras.
 	"""
 	
 	encuentros = []
@@ -379,8 +383,8 @@ def buscarPalabras(palabras, tablero):
 def obtenerCoordenada(tablero, pos):
 	"""
 	obtenerCoordenadas: List(String) Int -> Int Int
-	Dada una sopa de letras representada mediante una lista plana y una posición en esa lista, devuelve las coordenadas x e y de
-	esa posición si la lista fuera una matriz
+	Dada una sopa de letras representada mediante una lista plana y una posición en esa lista, 
+	devuelve las coordenadas x e y de esa posición si la lista fuera una matriz
 	"""
 
 	tamaño = len(tablero)
@@ -400,4 +404,5 @@ def obtenerCoordenada(tablero, pos):
 				return coordenadas
 		
 # Llamada para iniciar el programa
+
 main()
