@@ -31,7 +31,7 @@ que se encuentra en "tablero.txt" es válido y contiene las palabras a buscar.
 
 def main():
 	"""
-	main: None -> File File
+	main: None -> None
 	Abre temporalmente los archivos que contienen al tablero y la lista de palabras (si no existen, los crea),
 	los convierte en lista e inicia el programa
 	"""
@@ -57,7 +57,7 @@ def main():
 
 def sopaDeLetras(listaPalabras, tablero):
 	"""
-	sopaDeLetras: List(String) List(String) -> None
+	sopaDeLetras: List(String) List(String) -> File
 	Dada una lista de palabras o una lista de palabras y una lista que representa un tablero,
 	da a elegir al usuario si quiere crear una sopa de letras con la lista de palabras dadas 
 	o buscar la posición de	las palabras dadas en el tablero dado.
@@ -252,9 +252,9 @@ def lugaresDisponibles(tablero, palabra, direccion):
 
 def filaDisponible(palabra, fila, direccion):
 	"""
-	filaDisponible: List(String) String List(String) String -> Boolean
-	Dada la palabra a colocar y la fila en que se desea colocar, devuelve True si es posible 
-	colocarla en la dirección y sentido dado, en caso contrario devuelve False
+	filaDisponible: String List(String) String -> Boolean
+	Dada la palabra a colocar, la fila y sentido en que se desea colocar, devuelve True si es posible 
+	colocarla en la fila y sentido dado, en caso contrario devuelve False
 	"""
 
 	contador = 0
@@ -275,9 +275,9 @@ def filaDisponible(palabra, fila, direccion):
 
 def columnaDisponible(palabra, columna, direccion):
 	"""
-	columnaDisponible: List(String) String List(String) String -> Boolean
+	columnaDisponible: String List(String) String -> Boolean
 	Dada la palabra a colocar y la columna en que se desea colocar, devuelve True 
-	si es posible colocarla en la dirección	y sentido dado, en caso contrario devuelve False
+	si es posible colocarla en la columna y sentido dado, en caso contrario devuelve False
 	"""
 
 	contador = 0
@@ -297,9 +297,9 @@ def columnaDisponible(palabra, columna, direccion):
 	
 def diagonalDisponible(palabra, diagonal):
 	"""
-	diagonalDisponible: List(String) String List(String) String -> Boolean
+	diagonalDisponible: String List(String) -> Boolean
 	Dada la palabra a colocar y la diagonal en que se desea colocar, devuelve True si es 
-	posible colocarla en la dirección y sentido dado, en caso contrario devuelve False
+	posible colocarla en la diagonal dada, en caso contrario devuelve False
 	"""
 
 	letras = [letra for letra in palabra]
