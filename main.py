@@ -1,8 +1,10 @@
 import sys
 from random import *
 from math import *
+from pathlib import Path
 
 # Representación de datos
+
 """
 Representamos una sopa de letras de tamaño nxn mediante una lista de tamaño n², donde cada elemento representa
 una letra de la misma.
@@ -22,6 +24,11 @@ def main():
 
 	"""
 	listaPalabras = []
+
+	# Si no existen alguno de los archivos, crea uno vacío
+	for archivo in ["tablero.txt", "palabras.txt"]:
+		if not Path(archivo).is_file():
+			open(archivo, "w").close()
 
 	# Lee el archivo con las palabras (palabras.txt), y crea una lista de palabras con las mismas dadas
 	with open("palabras.txt", "r") as palabrasArchivo:
@@ -64,15 +71,21 @@ def sopaDeLetras(listaPalabras, tablero):
 			modo = str(input("Modo deseado: "))
 
 	if modo == "1":
-		tablero = tableroAString(crearSopa(listaPalabras))
+		if listaPalabras == []:
+			print("Error: archivo palabras.txt vacío")
+		else:
+			tablero = tableroAString(crearSopa(listaPalabras))
 
-		# Escribe el tablero al archivo tablero.txt
-		with open("tablero.txt", "w") as tableroArchivo:
-			tableroArchivo.write(tablero)
+			# Escribe el tablero al archivo tablero.txt
+			with open("tablero.txt", "w") as tableroArchivo:
+				tableroArchivo.write(tablero)
 
-		print("\nTablero creado, revise el archivo tablero.txt que se encuentra en el directorio del programa")
+			print("\nTablero creado, revise el archivo tablero.txt que se encuentra en el directorio del programa")
 	elif modo == "2":
-		return buscarPalabras(listaPalabras, tablero)
+		if listaPalabras == [] or tablero == []:
+			print("Error: archivo palabras.txt y/o tablero.txt vacío/s")
+		else:
+			return buscarPalabras(listaPalabras, tablero)
 	elif modo == "3":
 		exit()
 
@@ -87,7 +100,7 @@ def crearSopa(lista):
 	direcciones = ["hori1", "hori2", "vert1", "vert2", "diag"]
 	tablero = crearSopaVacia(lista)
 
-	# Ordena la lista por longitudd de palabra, en orden descendiente
+	# Ordena la lista por longitud de palabra, en orden descendiente
 	listaPalabras = sorted(lista, key=len, reverse=True)
 
 	for palabra in listaPalabras:
@@ -110,7 +123,6 @@ def crearSopa(lista):
 					colocarPalabra(tablero, palabra, direccion, pos)
 			else:
 				colocarPalabra(tablero, palabra, direccion, pos)
-
 	return rellenarTablero(tablero)
 
 def crearSopaVacia(lista):
@@ -120,9 +132,21 @@ def crearSopaVacia(lista):
 	n es la longitud de la palabras más larga de la lista dada más un entero en el rango [2,6]
 	"""
 
-	tamaño = ceil(sqrt(sumaLongitudesPalabras(lista))) + randint(2,7)
+	tamaño = max(ceil(sqrt(sumaLongitudesPalabras(lista))), palabraMasLarga(lista)) + randint(2,7)
 	tablero = [""]*tamaño**2
 	return tablero
+
+def palabraMasLarga(lista):
+	"""
+	palabraMasLarga: List(String) -> Int
+	Dada una lista de strings, devuelve la longitud del string más largo
+	"""
+
+	max = 0
+	for palabra in lista:
+		if len(palabra) > max:
+			max = len(palabra)
+	return max
 
 def tableroAString(tablero):
 	"""
@@ -176,7 +200,7 @@ def lugaresDisponibles(tablero, palabra, direccion):
 	"""
 	lugaresDisponibles: List(String) String String -> List(Int)
 	Dado el tablero, la palabra a colocar y la dirección en que se desea colocar, devuelve las posiciones iniciales
-	posibles donde la palabra se puede colocar en esa direcciṕn en el tablero
+	posibles donde la palabra se puede colocar en esa dirección en el tablero
 	"""
 
 	raiz = int(sqrt(len(tablero)))
@@ -185,32 +209,95 @@ def lugaresDisponibles(tablero, palabra, direccion):
 
 	if direccion == "diag":
 		for i in range(0, len(tablero)):
-			final = i + (length-1)*(raiz+1)
-			if tablero[i:final+1:raiz+1] == [""]*length and diagValida(tablero, palabra, i):
+			final = (length-1)*(raiz+1) + i +1
+			diagonal = tablero[i:final:raiz+1]
+			if diagonalDisponible(palabra, diagonal) and diagValida(tablero, palabra, i):
 				pos += [i]
 	elif direccion[:4] == "vert":
 		for i in range(0, (raiz-length+1)*raiz):
-			if i == 0:
-				ultima = raiz * length-1
-				columna = tablero[i:ultima:raiz]
-				if columna == [""]*length:
-					pos += [i]
-			else:
-				ultima = (raiz * length-1) + i
-				columna = tablero[i:ultima:raiz]
-				if columna == [""]*length:
+			ultima = (raiz * length-1) + i
+			columna = tablero[i:ultima:raiz]
+			if len(columna) == len(palabra):
+				if columnaDisponible(palabra, columna, direccion):
 					pos += [i]
 	elif direccion[:4] == "hori":
 		filas = []
+		# Convierte la lista plana en lista de filas (matriz)
 		for i in range(0, raiz):
 			filas += [tablero[i * raiz: (i * raiz) + raiz]]
+		# Secciona las filas en sublistas de tamaño igual a la longitud de la palabra
 		for i in range(0, raiz):
 			for j in range(0, raiz-length+1):
-				if filas[i][j:j + length] == [""] * length:
+				fila = filas[i][j:j + length]
+				if filaDisponible(palabra, fila, direccion):
 					pos += [(i*raiz)+j]
 	return pos
 
-def diagValida(tablero, palabra, casilla):
+def filaDisponible(palabra, fila, direccion):
+	"""
+	filaDisponible: List(String) String List(String) String -> Boolean
+	Dada la palabra a colocar y la fila en que se desea colocar, devuelve True si es posible colocarla en la dirección
+	y sentido dado, en caso contrario devuelve False
+	"""
+
+	contador = 0
+
+	# Convierte el string a lista de strings
+	if direccion[-1] == "1":
+		letras = [letra for letra in palabra]
+	else:
+		letras = [letra for letra in palabra[::-1]]
+
+	# Devuelve False si el espacio para un caracter está ocupado por un string distinto de vacío y distinto de la letra que irá en ese espacio
+	for i in range(0, len(letras)):
+		if fila[i] not in ["",letras[contador]]:
+			return False
+		contador += 1
+	return True
+
+
+def columnaDisponible(palabra, columna, direccion):
+	"""
+	columnaDisponible: List(String) String List(String) String -> Boolean
+	Dada la palabra a colocar y la columna en que se desea colocar, devuelve True si es posible colocarla en la dirección
+	y sentido dado, en caso contrario devuelve False
+	"""
+
+	contador = 0
+
+	# Convierte el string a lista de strings
+	if direccion[-1] == "1":
+		letras = [letra for letra in palabra]
+	else:
+		letras = [letra for letra in palabra[::-1]]
+	
+	# Devuelve False si el espacio para un caracter está ocupado por un string distinto de vacío y distinto de la letra que irá en ese espacio
+	for i in range(0, len(letras)):
+		if columna[i] not in ["",letras[contador]]:
+			return False
+		contador += 1
+	return True
+	
+def diagonalDisponible(palabra, diagonal):
+	"""
+	diagonalDisponible: List(String) String List(String) String -> Boolean
+	Dada la palabra a colocar y la diagonal en que se desea colocar, devuelve True si es posible colocarla en la dirección
+	y sentido dado, en caso contrario devuelve False
+	"""
+
+	letras = [letra for letra in palabra]
+	contador = 0
+
+	if len(diagonal) == len(letras):
+		for i in range(0, len(letras)):
+			if diagonal[i] != "" and diagonal[i] != letras[contador]:
+				return False
+			contador += 1
+		return True
+	else:
+		return False
+
+def diagValida(tablero, palabra, pos):
 	"""
 	diagValida: List(String) String Int -> Boolean
 	Dado el tablero, una palabra y un número que representa una posición del tablero, devuelve True si la palabra se
@@ -226,11 +313,12 @@ def diagValida(tablero, palabra, casilla):
 		filas += [listaNum[i * raiz: (i * raiz) + raiz]]
 	for j in range(0, raiz):
 		for k in range(0, raiz):
-			if casilla == filas[j][k] and k <= (raiz-length):
+			if pos == filas[j][k] and k <= (raiz-length):
 				return True
 
 def colocarPalabra(tablero, palabra, direccion, pos):
 	"""
+	colocarPalabra: List(String) String String Int -> List(String)
 	Dado el tabalero, una palabra, una dirección y una casilla, modifica el tablero con la palabra colocada en la
 	dirección y posición dada.
 	"""
@@ -260,7 +348,7 @@ def buscarPalabras(palabras, tablero):
 	Dada una lista de palabras y una sopa de letras, devuelve una lista de diccionarios, que representan la posición
 	y la dirección en que se encuentran esas palabras.
 	"""
-
+	
 	encuentros = []
 
 	for palabra in palabras:
@@ -268,17 +356,41 @@ def buscarPalabras(palabras, tablero):
 		raiz = int(sqrt(len(tablero)))
 		for i in range(0, len(tablero)):
 			if ''.join(tablero[i:i+length]) in [palabra, palabra[::-1]]:
-				encuentros += [{'palabra': palabra, 'dir': 'Horizontal' , 'pos': i}]
+				encuentros += [{'palabra': palabra, 'dir': 'horizontal' , 'pos': i}]
 			elif ''.join(tablero[i::raiz][:length]) in [palabra, palabra[::-1]]:
-				encuentros += [{'palabra': palabra, 'dir': 'Vertical' , 'pos': i}]
+				encuentros += [{'palabra': palabra, 'dir': 'vertical' , 'pos': i}]
 			elif ''.join(tablero[i::1+raiz][:length]) in [palabra, palabra[::-1]]:
-				encuentros += [{'palabra': palabra, 'dir': 'Diagonal' , 'pos': i}]
+				encuentros += [{'palabra': palabra, 'dir': 'diagonal' , 'pos': i}]
 
 	# Imprime las posiciones de cada palabra de forma legible
 	for encuentro in encuentros:
-		print("La palabra " + encuentro['palabra'] + " se encuentra en la posición " + str(encuentro['pos']) + " de forma " + encuentro['dir'])
+		coordenadas = obtenerCoordenada(tablero, encuentro['pos'])
+		fila = str(coordenadas[0])
+		columna = str(coordenadas[1])
+		print("La palabra " + encuentro['palabra'] + " se encuentra en la fila " + fila + " y columna " + columna + " de forma " + encuentro['dir'])
 
+def obtenerCoordenada(tablero, pos):
+	"""
+	obtenerCoordenadas: List(String) Int -> Int Int
+	Dada una sopa de letras representada mediante una lista plana y una posición en esa lista, devuelve las coordenadas x e y de
+	esa posición si la lista fuera una matriz
+	"""
 
+	tamaño = len(tablero)
+	raiz = int(sqrt(len(tablero)))
+	listaNum = []
+	filas = []
+	coordenadas = []
 
+	for i in range(0, tamaño):
+		listaNum += [i]
+	for i in range(0, raiz):
+			filas += [listaNum[i * raiz: (i * raiz) + raiz]]
+	for i in range(0, raiz):
+		for j in range(0, raiz):
+			if filas[i][j] == pos:
+				coordenadas += [i] + [j]
+				return coordenadas
+		
 # Llamada para iniciar el programa
 main()

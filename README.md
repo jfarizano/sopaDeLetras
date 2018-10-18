@@ -7,5 +7,3 @@ En el archivo palabras.txt se deben encontrar las palabras a colocar o buscar en
 por un salto de línea cada una.
 Si no se tiene un tablero en donde buscar palabras, el archivo tablero.txt debe estar vacío y luego
 generarse uno con la opción 1 del programa.
-
-
