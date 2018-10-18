@@ -368,13 +368,19 @@ def buscarPalabras(palabras, tablero):
 		length = len(palabra)
 		raiz = int(sqrt(len(tablero)))
 		for i in range(0, len(tablero)):
-			if ''.join(tablero[i:i+length]) in [palabra, palabra[::-1]]:
+			if ''.join(tablero[i:i+length]) == palabra:
 				encuentros += [{'palabra': palabra, 'dir': 'horizontal' , 'pos': i}]
 				encontrada = 1
-			elif ''.join(tablero[i::raiz][:length]) in [palabra, palabra[::-1]]:
+			elif ''.join(tablero[i:i+length])  == palabra[::-1]:
+				encuentros += [{'palabra': palabra, 'dir': 'horizontal Inversa' , 'pos': i}]
+				encontrada = 1
+			elif ''.join(tablero[i::raiz][:length]) == palabra:
 				encuentros += [{'palabra': palabra, 'dir': 'vertical' , 'pos': i}]
 				encontrada = 1
-			elif ''.join(tablero[i::1+raiz][:length]) in [palabra, palabra[::-1]]:
+			elif ''.join(tablero[i::raiz][:length]) == palabra[::-1]:
+				encuentros += [{'palabra': palabra, 'dir': 'vertical Inversa' , 'pos': i}]
+				encontrada = 1
+			elif ''.join(tablero[i::1+raiz][:length]) == palabra:
 				encuentros += [{'palabra': palabra, 'dir': 'diagonal' , 'pos': i}]
 				encontrada = 1
 		if encontrada == 0:
