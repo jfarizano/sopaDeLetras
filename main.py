@@ -135,7 +135,6 @@ def crearSopa(lista):
 					colocarPalabra(tablero, palabra, direccion, pos)
 			else:
 				colocarPalabra(tablero, palabra, direccion, pos)
-		print(palabra)
 	return rellenarTablero(tablero)
 
 def crearSopaVacia(lista):
