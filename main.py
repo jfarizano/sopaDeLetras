@@ -1,3 +1,5 @@
+#!/usr/bin/python
+#coding=utf-8
 """
 Trabajo práctico N° 1 - Sopa de letras - Programación 2 2018
 Integrantes del grupo: Farizano, Juan Ignacio - Pereyra, Alejo
@@ -11,12 +13,12 @@ from pathlib import Path
 # Representación de datos
 
 """
-Representamos una sopa de letras de tamaño nxn mediante una lista de tamaño n², donde cada elemento representa
+Representamos una sopa de letras de size nxn mediante una lista de size n², donde cada elemento representa
 una letra de la misma.
 Por ejemplo, el tablero: A B C
 						 D E F
 						 G H I
-es de tamaño 3x3, por lo tanto tiene 9 elementos y está representado por la lista:
+es de size 3x3, por lo tanto tiene 9 elementos y está representado por la lista:
 ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
 Las palabras se encuentran en el archivo "palabras.txt", donde cada línea representa una palabra.
 El tablero de la sopa de letras se encuentra en el archivo "tablero.txt".
@@ -140,14 +142,14 @@ def crearSopa(lista):
 def crearSopaVacia(lista):
 	"""
 	crearSopaVacia: List(String) -> List(String)
-	Dada una lista de palabras, devuelve una lista de tamaño n² cuyos elementos son el string vacío,
+	Dada una lista de palabras, devuelve una lista de size n² cuyos elementos son el string vacío,
 	que representa el tablero de la sopa de letras, donde n es el máximo entre la longitud de la palabras
 	más larga de la lista dada o la raíz de la suma de la longitudes de todas las palabras
 	más un entero en el rango [2,6]
 	"""
 
-	tamaño = max(ceil(sqrt(sumaLongitudesPalabras(lista))), palabraMasLarga(lista)) + randint(2,7)
-	tablero = [""]*tamaño**2
+	size = max(ceil(sqrt(sumaLongitudesPalabras(lista))), palabraMasLarga(lista)) + randint(2,7)
+	tablero = [""]*size**2
 	return tablero
 
 def palabraMasLarga(lista):
@@ -242,7 +244,7 @@ def lugaresDisponibles(tablero, palabra, direccion):
 		# Convierte la lista plana en lista de filas (matriz)
 		for i in range(0, raiz):
 			filas += [tablero[i * raiz: (i * raiz) + raiz]]
-		# Secciona las filas en sublistas de tamaño igual a la longitud de la palabra
+		# Secciona las filas en sublistas de size igual a la longitud de la palabra
 		for i in range(0, raiz):
 			for j in range(0, raiz-length+1):
 				fila = filas[i][j:j + length]
@@ -413,12 +415,12 @@ def obtenerCoordenada(tablero, pos):
 	devuelve las coordenadas x e y de esa posición si la lista fuera una matriz
 	"""
 
-	tamaño = len(tablero)
+	size = len(tablero)
 	raiz = int(sqrt(len(tablero)))
 	listaNum = []
 	filas = []
 
-	for i in range(0, tamaño):
+	for i in range(0, size):
 		listaNum += [i]
 	for i in range(0, raiz):
 			filas += [listaNum[i * raiz: (i * raiz) + raiz]]
@@ -429,4 +431,14 @@ def obtenerCoordenada(tablero, pos):
 				return coordenadas
 # Llamada para iniciar el programa
 
-main()
+# main()
+
+def test_palabraMasLarga():
+	palabras = ["Hola","Que","Tal","Apocalipsis","Hambre","Sandwich","Equisde"]
+	assert palabraMasLarga(palabras) == 11
+
+def test_obtenerCoordenada():
+	sopa = crearSopaVacia(["Apocalipsis"])
+	length = len("Apocalipsis")
+	assert obtenerCoordenada(sopa, 1) == (0,1)
+	assert (1,1) < obtenerCoordenada(sopa, 2*length) < (10,10)
