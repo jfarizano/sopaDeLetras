@@ -27,7 +27,7 @@ En caso que no exista algún archivo se creará uno vacío.
 Para la opción 1 el archivo "palabras.txt" no debe estar vacío, en caso de que no exista el archivo
 "tablero.txt" se creará uno nuevo con la sopa resultante, y en caso de que exista, se sobreescribirá.
 Para la opción 2 ambos archivos deberán existir y ser distintos de vacío, se supone que el tablero
-que se encuentra en "tablero.txt" es válido y contiene las palabras a buscar.
+que se encuentra en "tablero.txt" es válido.
 """
 
 # Funciones principales
@@ -275,7 +275,6 @@ def filaDisponible(palabra, fila, direccion):
 		contador += 1
 	return True
 
-
 def columnaDisponible(palabra, columna, direccion):
 	"""
 	columnaDisponible: String List(String) String -> Boolean
@@ -336,6 +335,7 @@ def diagValida(tablero, palabra, pos):
 		for k in range(0, raiz):
 			if pos == filas[j][k] and k <= (raiz-length):
 				return True
+	return False
 
 def colocarPalabra(tablero, palabra, direccion, pos):
 	"""
@@ -431,24 +431,52 @@ def obtenerCoordenada(tablero, pos):
 				coordenadas = (i, j)
 				return coordenadas
 
-# Llamada para iniciar el programa
-
-# main()
-
 # Testing de funciones
+
+tableroTest = ['I', 'E', '', '', '', '', 'O', '', '', 'R', 'U', '', '', '', '', 'J', '', '', 'A', 'Q', '', '', '', '', 'E', '', '', 'F', 'B', '', '', 'H', 'O', 'L', 'A', 'L', 'Z', '', 'A', '', '', '', 'A', '', 'A', 'Z', '', 'C', 'R', '', '', '', '', 'T', 'Z', '', '', 'A', 'C', '', '', '', '', '', '', '', '', 'S', 'O', '', '', '', '', '', '', '', '', 'A', '', '', '']
 
 def test_palabraMasLarga():
 	palabras = ["Hola","Que","Tal","Apocalipsis","Hambre","Sandwich","Equisde"]
 	assert palabraMasLarga(palabras) == 11
+	assert palabraMasLarga(["123456789"]) ==9
+	assert palabraMasLarga([]) == 0
+
+def test_sumaLongitudesPalabras():
+	palabras = ["Hola","Que","Tal","Apocalipsis","Hambre","Sandwich","Equisde"]
+	assert sumaLongitudesPalabras(palabras) == 42
+	assert sumaLongitudesPalabras([]) == 0
 
 def test_obtenerCoordenada():
 	sopa = crearSopaVacia(["Apocalipsis"])
 	length = len("Apocalipsis")
 	assert obtenerCoordenada(sopa, 1) == (0,1)
+	assert obtenerCoordenada(sopa, 0) == (0,0)
 	assert (1,1) < obtenerCoordenada(sopa, 2*length) < (10,10)
 
 def test_crearSopaVacia():
 	sopa = crearSopaVacia(["Hola","Que","Tal","Apocalipsis","Hambre","Sandwich","Equisde"])
 	assert 13**2 <= len(sopa) <= 17*22
 
+def test_lugaresDisponibles():	
+	assert lugaresDisponibles(tableroTest, "test", "horiz1") == [2, 11, 20, 49, 59, 63, 72, 73]
+	assert lugaresDisponibles(tableroTest, "test", "vert2") == [2, 3, 12, 37, 43, 46, 51, 52]
+	assert lugaresDisponibles(tableroTest, "test", "diag") == [20, 29, 30, 39, 40, 41, 46, 49, 50]
 
+def test_posDisponibles():
+	assert filaDisponible("ILUSTRADO", ['I', 'E', '', '', '', '', 'O', '', '',], "horiz1") == False
+	assert filaDisponible("ILUSTRADO", ['I', '', '', '', '', '', '', '', 'O',], "horiz1") == True
+	assert filaDisponible("ILUSTRADO", ['O', '', '', '', '', '', '', '', '',], "horiz2") == True
+	assert columnaDisponible("HOLA", ['', '', '', 'H'], "vert1") == False
+	assert columnaDisponible("HOLA", ['', '', '', 'H'], "vert2") == True
+	assert diagonalDisponible("TESTING", ['T', '', 'S', '', '', '', 'G']) == True
+	assert diagonalDisponible("TESTING", ['T', '', 'S', 'N', '', '', 'G']) == False
+	assert diagValida(tableroTest, "HOLA", 7) == False
+	assert diagValida(tableroTest, "HOLA", 5) == True
+
+def test_tableroAString():
+	assert tableroAString(['T', 'E', 'S', 'T']) == "T E\nS T"
+	assert tableroAString([]) == ""
+
+# Llamada para iniciar el programa
+
+#main()
