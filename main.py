@@ -9,6 +9,7 @@ import sys
 from random import *
 from math import *
 from pathlib import Path
+from pytest import *
 
 # Representación de datos
 
@@ -429,9 +430,12 @@ def obtenerCoordenada(tablero, pos):
 			if filas[i][j] == pos:
 				coordenadas = (i, j)
 				return coordenadas
+
 # Llamada para iniciar el programa
 
 # main()
+
+# Testing de funciones
 
 def test_palabraMasLarga():
 	palabras = ["Hola","Que","Tal","Apocalipsis","Hambre","Sandwich","Equisde"]
@@ -442,3 +446,9 @@ def test_obtenerCoordenada():
 	length = len("Apocalipsis")
 	assert obtenerCoordenada(sopa, 1) == (0,1)
 	assert (1,1) < obtenerCoordenada(sopa, 2*length) < (10,10)
+
+def test_crearSopaVacia():
+	sopa = crearSopaVacia(["Hola","Que","Tal","Apocalipsis","Hambre","Sandwich","Equisde"])
+	assert 13**2 <= len(sopa) <= 17*22
+
+
